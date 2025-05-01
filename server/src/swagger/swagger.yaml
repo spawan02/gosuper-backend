@@ -1,0 +1,128 @@
+openapi: 3.0.0
+info:
+  title: Expense Tracker API
+  version: 1.0.0
+  description: API documentation for Expense Tracker backend
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
+paths:
+  /api/auth/signup:
+    post:
+      summary: Register a new user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: User registered
+        '400':
+          description: Bad request
+  /api/auth/login:
+    post:
+      summary: Login user and return JWT
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: JWT token returned
+        '401':
+          description: Invalid credentials
+  /api/expenses:
+    get:
+      summary: List all expenses for the authenticated user
+      tags: [Expense]
+      responses:
+        '200':
+          description: A list of expenses and summary
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalIncome:
+                    type: number
+                  totalExpense:
+                    type: number
+                  expenses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        amount:
+                          type: number
+                        category:
+                          type: string
+                        description:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: date-time
+
+    post:
+      summary: Add a new expense or income
+      tags: [Expense]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount, category]
+              properties:
+                amount:
+                  type: number
+                category:
+                  type: string
+                  enum: [Income, Expense]
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Expense created
+        '400':
+          description: Validation error
+
+  /api/expenses/{id}:
+    delete:
+      summary: Delete an expense by ID
+      tags: [Expense]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Expense deleted
+        '404':
+          description: Expense not found or unauthorized
