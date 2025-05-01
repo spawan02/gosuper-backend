@@ -4,7 +4,7 @@ import { Express } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import path from "path"
 
-const swaggerDocument = YAML.load(path.join(__dirname,'swagger.yaml'));  
+const swaggerDocument = YAML.load('./src/swagger/swagger.yaml');  
 
 const swaggerOptions = {
   definition: {
